@@ -1,6 +1,6 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from .models import Post 
+from .models import Comment, Post 
 from django.contrib.auth.models import User 
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
@@ -64,6 +64,20 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
             return True
         return False 
 
+class AddCommentView(CreateView):
+    model = Comment
+    template_name = 'add_comment.html'
+    fields = '__all__'
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user 
+        return super().form_valid(form)
+
+    
+
 
 def about(request):
     return render(request, 'blog/about.html', {'title': 'About'})
+
+def music(request):
+    return render(request, 'blog/music.html', {'title': 'Music'})
